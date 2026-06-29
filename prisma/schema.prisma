@@ -14,28 +14,28 @@ datasource db {
 model User {
   id String @id @default(cuid())
 
-  name           String?
-  email          String?   @unique
-  emailVerified  DateTime?
-  image          String?
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
 
-  accounts       Account[]
-  sessions       Session[]
+  accounts Account[]
+  sessions Session[]
 
-  createdRooms   Room[]       @relation("CreatedRooms")
-  memberships    RoomMember[]
-  messages        Message[]
+  createdRooms Room[]       @relation("CreatedRooms")
+  memberships  RoomMember[]
+  messages     Message[]
 }
 
 model Room {
   id           Int      @id @default(autoincrement())
-  name         String
+  name         String   @unique
   passwordHash String
   maxUsers     Int      @default(5)
   createdAt    DateTime @default(now())
 
   createdBy String
-  creator   User @relation("CreatedRooms", fields: [createdBy], references: [id], onDelete: Cascade)
+  creator   User   @relation("CreatedRooms", fields: [createdBy], references: [id], onDelete: Cascade)
 
   members  RoomMember[]
   messages Message[]
@@ -45,18 +45,18 @@ model Room {
 }
 
 model Account {
-  id                 String @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -74,7 +74,7 @@ model Session {
 
 model VerificationToken {
   identifier String
-  token      String @unique
+  token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
