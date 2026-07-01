@@ -1,128 +1,222 @@
-# Real-Time Chat Room Application
+# 💬 Real-Time Chat Room
 
-A modern real-time chat room application built with Next.js, TypeScript, Prisma, Neon PostgreSQL, NextAuth, and WebSockets (`ws`).
+A full-stack real-time chat application built with **Next.js**, **TypeScript**, **WebSockets (`ws`)**, **NextAuth**, **Prisma**, and **PostgreSQL**. Users can authenticate with Google, create chat rooms, join existing rooms, and exchange messages instantly through a dedicated WebSocket server.
 
-## Features
+---
 
-- Google Authentication (NextAuth)
-- Secure user sessions
-- Room creation with password protection
-- Join existing rooms
-- Default room capacity of 5 users
-- Real-time messaging using WebSockets
-- PostgreSQL database hosted on Neon
-- Prisma ORM
-- Responsive UI
-- Protected routes
+# ✨ Features
 
-## Tech Stack
+* 🔐 Google Authentication with NextAuth
+* 👤 Secure user authentication and sessions
+* 🏠 Create chat rooms
+* 🚪 Join existing chat rooms
+* 💬 Real-time messaging using WebSockets (`ws`)
+* 👥 Multiple users can chat in the same room simultaneously
+* 📡 Dedicated WebSocket server for low-latency communication
+* 💾 Persistent data storage with Prisma & PostgreSQL
+* 🎨 Responsive user interface built with Next.js
+
+---
+
+# 🛠️ Tech Stack
 
 ### Frontend
 
-- Next.js (App Router)
-- React
-- TypeScript
-- Tailwind CSS
+* Next.js 16
+* React 19
+* TypeScript
+* Tailwind CSS
 
 ### Backend
 
-- Next.js API Routes
-- NextAuth v4
-- Prisma ORM
-- PostgreSQL (Neon)
+* Next.js Route Handlers
+* WebSocket (`ws`)
+* NextAuth
+* Prisma ORM
 
-### Real-Time Communication
+### Database
 
-- ws (WebSocket)
+* PostgreSQL
 
-## Database
+---
 
-- User
-- Account
-- Session
-- VerificationToken
-- Room
-- RoomMember
-- Message
+# 📂 Project Structure
 
-## Authentication
-
-- Google OAuth
-- Prisma Adapter
-- Database Sessions
-
-## Getting Started
-
-### Clone
-
-```bash
-git clone <repository-url>
+```text
+real-time-chat-room/
+│
+├── app/                # Next.js App Router
+├── components/         # Reusable UI components
+├── lib/                # Utility functions
+├── prisma/             # Prisma schema and configuration
+├── public/             # Static assets
+├── types/              # Shared TypeScript types
+├── ws/                 # Standalone WebSocket server
+│
+├── .env.example
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-### Install
+---
+
+# 🏗️ Architecture
+
+```text
+                ┌─────────────────────────┐
+                │        Browser          │
+                └────────────┬────────────┘
+                             │
+                     HTTP / HTTPS
+                             │
+                ┌────────────▼────────────┐
+                │       Next.js App       │
+                │                         │
+                │ • Authentication        │
+                │ • Room APIs             │
+                │ • Prisma                │
+                └────────────┬────────────┘
+                             │
+                      PostgreSQL Database
+                             │
+                ┌────────────▼────────────┐
+                │      Prisma ORM         │
+                └─────────────────────────┘
+
+
+                WebSocket Connection
+                       ws://
+                         │
+                         ▼
+             ┌─────────────────────────┐
+             │   Standalone ws Server  │
+             │                         │
+             │ • Room Management       │
+             │ • Message Broadcast     │
+             │ • Client Connections    │
+             └─────────────────────────┘
+```
+
+---
+
+# ⚙️ Environment Variables
+
+Create a `.env` file using the provided `.env.example`.
+
+```env
+DATABASE_URL=
+
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+WS_URL=
+```
+
+---
+
+# 🚀 Getting Started
+
+Clone the repository:
+
+```bash
+git clone https://github.com/PrinceKakadiya02/real-time-chat-room.git
+```
+
+Move into the project:
+
+```bash
+cd real-time-chat-room
+```
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-### Create Environment Variables
-
-Create a `.env` file:
-
-```env
-DATABASE_URL=
-
-NEXTAUTH_URL=http://localhost:3000
-
-NEXTAUTH_SECRET=
-
-GOOGLE_CLIENT_ID=
-
-GOOGLE_CLIENT_SECRET=
-```
-
-### Run Prisma
+Generate the Prisma Client:
 
 ```bash
-npx prisma migrate dev
 npx prisma generate
 ```
 
-### Start Development Server
+Run database migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+---
+
+# ▶️ Running the Project
+
+Start the Next.js application:
 
 ```bash
 npm run dev
 ```
 
-Visit:
+Start the WebSocket server:
 
+```bash
+cd ws
+npm install
+npm run dev
 ```
-http://localhost:3000
-```
 
-## Project Status
+> Make sure both the Next.js application and the WebSocket server are running to enable real-time communication.
 
-### Completed
+---
 
-- Next.js setup
-- Prisma setup
-- Neon PostgreSQL integration
-- Google Authentication
-- NextAuth configuration
-- Database sessions
-- User persistence
+# 📡 WebSocket Workflow
 
-### In Progress
+1. User signs in using Google.
+2. User creates or joins a chat room.
+3. The client establishes a WebSocket connection.
+4. Messages are sent to the standalone WebSocket server.
+5. The server broadcasts each message to every connected client in the same room.
+6. All users receive new messages instantly without refreshing the page.
 
-- Dashboard
-- Room creation
-- Join room
-- Password-protected rooms
-- WebSocket server
-- Real-time chat
-- Online users
-- Chat history
+---
 
-## License
+# 🔐 Authentication
 
-This project is for learning and portfolio purposes.
+Authentication is implemented using **NextAuth** with the **Google Provider**.
+
+Authenticated users can:
+
+* Create chat rooms
+* Join chat rooms
+* Exchange messages in real time
+
+---
+
+# 🗄️ Database
+
+Prisma ORM is used to communicate with PostgreSQL.
+
+The database stores:
+
+* Users
+* OAuth Accounts
+* Sessions
+* Chat Rooms
+* Messages
+
+---
+
+# 🔮 Future Improvements
+
+* Message history
+* Typing indicators
+* Online user presence
+* Read receipts
+* File and image sharing
+* Emoji reactions
+* Private messaging
+* Chat search
+* Room management (delete/edit)
