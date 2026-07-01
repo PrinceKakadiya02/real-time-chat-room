@@ -1,41 +1,44 @@
-type ChatMessagesProps = {
-  messages: {
-    id: number;
-    content: string;
-    createdAt: Date;
-    sender: {
-      id: string;
-      name: string | null;
-      email: string | null;
-    };
-  }[];
+"use client";
+
+type Message = {
+  id: number;
+  content: string;
+  createdAt: Date;
+  sender: {
+    id: string;
+    name: string | null;
+    image: string | null;
+  };
+};
+
+type Props = {
+  messages: Message[];
 };
 
 export default function ChatMessages({
   messages,
-}: ChatMessagesProps) {
-  if (messages.length === 0) {
-    return (
-      <div className="border rounded p-4 h-125">
-        <p className="text-gray-500">
-          No messages yet.
-        </p>
-      </div>
-    );
-  }
-
+}: Props) {
   return (
-    <div className="border rounded p-4 h-125 overflow-y-auto space-y-3">
+    <div className="border rounded p-4 h-[500px] overflow-y-auto space-y-3">
       {messages.map((message) => (
         <div
           key={message.id}
-          className="border-b pb-2"
+          className="border rounded p-3"
         >
           <p className="font-semibold">
-            {message.sender.name ?? message.sender.email}
+            {message.sender.name ?? "Unknown User"}
           </p>
 
           <p>{message.content}</p>
+
+          <p className="text-xs text-gray-500">
+            {new Date(message.createdAt).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true,
+            })}
+          </p>
         </div>
       ))}
     </div>

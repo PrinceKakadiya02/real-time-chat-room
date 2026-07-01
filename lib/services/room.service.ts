@@ -123,20 +123,24 @@ export async function getRoomById({ userId, roomId }: GetRoomByIdParams) {
       id: roomId,
     },
     include: {
-      creator: true,
       members: {
         include: {
           user: true,
         },
       },
       messages: {
-        include: {
-          sender: true,
-        },
         orderBy: {
           createdAt: "asc",
         },
-        take: 50,
+        include: {
+          sender: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
       },
     },
   });

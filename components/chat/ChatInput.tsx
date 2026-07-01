@@ -2,34 +2,27 @@
 
 import { useState } from "react";
 type ChatInputProps = {
-  roomId: number;
+  onSend: (content: string) => void;
 };
 
 export default function ChatInput({
-  roomId,
+  onSend,
 }: ChatInputProps) {
   const [message, setMessage] = useState("");
 
   async function handleSubmit(
-  e: React.FormEvent<HTMLFormElement>
-) {
-  e.preventDefault();
+    e: React.FormEvent<HTMLFormElement>
+  ) {
+    e.preventDefault();
 
-  if (!message.trim()) return;
+    if (!message.trim()) {
+      return;
+    }
 
-  await fetch("/api/message", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      roomId,
-      content: message,
-    }),
-  });
+    onSend(message);
 
-  setMessage("");
-}
+    setMessage("");
+  }
 
   return (
     <form

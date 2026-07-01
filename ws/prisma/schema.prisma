@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  image         String?
+  emailVerified DateTime?
+  accounts      Account[]
+  messages      Message[]
+  createdRooms  Room[]       @relation("CreatedRooms")
+  memberships   RoomMember[]
+  sessions      Session[]
+}
+
+model Room {
+  id           Int          @id @default(autoincrement())
+  name         String       @unique
+  passwordHash String
+  maxUsers     Int          @default(5)
+  createdAt    DateTime     @default(now())
+  createdBy    String
+  messages     Message[]
+  creator      User         @relation("CreatedRooms", fields: [createdBy], references: [id], onDelete: Cascade)
+  members      RoomMember[]
+
+  @@index([name])
+  @@index([createdBy])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model RoomMember {
+  id       Int      @id @default(autoincrement())
+  roomId   Int
+  userId   String
+  joinedAt DateTime @default(now())
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([roomId])
+  @@index([userId])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  roomId    Int
+  senderId  String
+  content   String
+  createdAt DateTime @default(now())
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([roomId])
+  @@index([senderId])
+  @@index([createdAt])
+}
